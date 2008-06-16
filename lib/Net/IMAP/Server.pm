@@ -8,7 +8,7 @@ use base qw/Net::Server::Coro Class::Accessor/;
 use UNIVERSAL::require;
 use Coro;
 
-our $VERSION = '0.7';
+our $VERSION = '0.8';
 
 =head1 NAME
 
@@ -252,7 +252,8 @@ coroutine.
 =cut
 
 sub connection {
-    my $self = shift;
+    my $class = shift;
+    my $self  = ref $class ? $class : $Net::IMAP::Server::Server;
     if (@_) {
         if (defined $_[0]) {
             $self->{connection}{$Coro::current . ""} = shift;
