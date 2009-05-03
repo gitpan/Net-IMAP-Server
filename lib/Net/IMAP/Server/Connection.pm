@@ -123,6 +123,13 @@ sub selected {
     return $self->_selected(@_);
 }
 
+=head2 selected_read_only
+
+Returns true of the currently selected mailbox has been forced into
+read-only mode.  Note that the mailbox may be read-only for other
+reasons, so checking L<Net::IMAP::Server::Mailbox/read_only> is
+suggested instead.
+
 =head2 greeting
 
 Sends out a one-line untagged greeting to the client.
@@ -205,7 +212,12 @@ Returns the L<EV> watcher in charge of the inactivity timer.
 
 Handles a single line from the client.  This is not quite the same as
 handling a command, because of client literals and continuation
-commands.
+commands.  This also handles dispatch of client commands to
+L<Net::IMAP::Server::Command> subclasses (see L</class_for>).
+
+Any errors generated while running commands will cause a C<NO Server
+error> to be sent to the client -- unless the error message starts
+with C<NO> or c<BAD>, in which case it will be relayed to the client.
 
 =cut
 
@@ -252,7 +264,8 @@ sub handle_command {
 
 =head2 class_for COMMAND
 
-Returns the package name that implements the given C<COMMAND>.
+Returns the package name that implements the given C<COMMAND>.  See
+L<Net::IMAP::Server/add_command>.
 
 =cut
 
