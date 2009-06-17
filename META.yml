@@ -20,6 +20,8 @@ no_index:
 requires:
   Class::Accessor: 0
   Coro: 0
+  DateTime: 0
+  DateTime::Format::Strptime: 0
   Email::Address: 0
   Email::MIME: 1.862
   Email::MIME::ContentType: 0
@@ -33,4 +35,4 @@ requires:
   UNIVERSAL::require: 0
 resources:
   license: http://dev.perl.org/licenses/
-version: 1.17
+version: 1.18
