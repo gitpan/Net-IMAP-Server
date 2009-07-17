@@ -211,7 +211,7 @@ sub _session_flags {
     my $self = shift;
     my $conn = Net::IMAP::Server->connection;
     return {} unless $conn;
-    return $conn->_session_flags->{$self} || {};
+    return $conn->_session_flags->{$self} ||= {};
 }
 
 =head2 set_flag FLAG [, SILENT]
@@ -471,6 +471,7 @@ sub mime_select {
     }
 
     return $result unless defined $start;
+    return "" if $start > length $result;
     return substr( $result, $start ) unless defined $end;
     return substr( $result, $start, $end );
 }
