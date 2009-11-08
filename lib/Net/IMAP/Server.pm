@@ -8,7 +8,7 @@ use base qw/Net::Server::Coro Class::Accessor/;
 use UNIVERSAL::require;
 use Coro;
 
-our $VERSION = '1.24';
+our $VERSION = '1.25';
 
 =head1 NAME
 
@@ -60,7 +60,6 @@ __PACKAGE__->mk_accessors(
     qw/port ssl_port
        auth_class model_class connection_class
        command_class
-       user group
        poll_every
        unauth_idle auth_idle unauth_commands
       /
@@ -99,19 +98,6 @@ be a subclass of L<Net::IMAP::Server::DefaultModel>.
 On rare occasions, you may wish to subclass the connection class; this
 class must be a subclass of L<Net::IMAP::Server::Connection>.
 
-=item user
-
-The name or ID of the user that the server should run as; this
-defaults to the current user.  Note that privileges are dropped after
-binding to the port and reading the certificates, so escalated
-privileges should not be needed.  Running as your C<nobody> user or
-equivalent is suggested.
-
-=item group
-
-The name or ID of the group that the server should run as; see
-C<user>, above.
-
 =item poll_every
 
 How often the current mailbox should be polled, in seconds; defaults
@@ -146,6 +132,43 @@ be either a relative or absolute path.
 
 =back
 
+It also accepts the following L<Net::Server> arguments -- see its
+documentation for details on their use.
+
+=over
+
+=item L<Net::Server/log_level>
+
+=item L<Net::Server/log_file>
+
+=item L<Net::Server/syslog_logsock>
+
+=item L<Net::Server/syslog_ident>
+
+=item L<Net::Server/syslog_logopt>
+
+=item L<Net::Server/syslog_facility>
+
+=item L<Net::Server/pid_file>
+
+=item L<Net::Server/chroot>
+
+=item L<Net::Server/user>
+
+=item L<Net::Server/group>
+
+=item L<Net::Server/reverse_lookups>
+
+=item L<Net::Server/allow>
+
+=item L<Net::Server/deny>
+
+=item L<Net::Server/cidr_allow>
+
+=item L<Net::Server/cidr_deny>
+
+=back
+
 =cut
 
 sub new {
@@ -167,6 +190,15 @@ sub new {
             connection       => {},
         }
     );
+
+    $self->{server}{$_} = $self->{$_}
+        for grep {defined $self->{$_}}
+            qw/log_level log_file
+               syslog_logsock syslog_ident syslog_logopt syslog_facility
+               pid_file chroot user group
+               reverse_lookups allow deny cidr_allow cidr_deny
+              /;
+
     UNIVERSAL::require( $self->auth_class )
         or die "Can't require auth class: $@\n";
     $self->auth_class->isa("Net::IMAP::Server::DefaultAuth")
@@ -196,6 +228,8 @@ that this was called on; thus, all IMAP objects have a way of
 referring to the server -- and though L</connection>, whatever parts
 of the IMAP internals they need.
 
+Any arguments are passed through to L<Net::Server/run>.
+
 =cut
 
 sub run {
@@ -208,10 +242,9 @@ sub run {
     }
     local $Net::IMAP::Server::Server = $self;
     $self->SUPER::run(
+        @_,
         proto => \@proto,
         port  => \@port,
-        user  => $self->user,
-        group => $self->group,
     );
 }
 
@@ -358,13 +391,22 @@ sub add_command {
     my $self = shift;
     my ($name, $package) = @_;
     if (not $package->require) {
-        warn $@;
+        $self->log( 1, $@ );
     } elsif (not $package->isa('Net::IMAP::Server::Command')) {
-        warn "$package is not a Net::IMAP::Server::Command!";
+        $self->log( 1, "$package is not a Net::IMAP::Server::Command!" );
     } else {
         $self->command_class->{uc $name} = $package;
     }
 }
+
+=head2 log SEVERITY, MESSAGE
+
+By default, defers to L<Net::Server/log>, which outputs to syslog, a
+logfile, or STDERR, depending how it was configured.  L<Net::Server>'s
+default is to print to STDERR.  If you have custom logging needs,
+override this method, or L<Net::Server/write_to_log_hook>.
+
+=cut
 
 1;    # Magic true value required at end of module
 __END__
