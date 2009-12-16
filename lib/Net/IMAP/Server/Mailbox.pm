@@ -548,8 +548,18 @@ L<Net::IMAP::Server::Connection/selected_read_only>)
 sub read_only {
     my $self = shift;
     return unless Net::IMAP::Server->connection;
-    return Net::IMAP::Server->connection->selected_read_only;
+    return $self->selected
+        && Net::IMAP::Server->connection->selected_read_only;
 }
+
+=head3 select
+
+Called when the mailbox is selected; by default does nothing.  Note
+that this could be called a a result of either a SELECT or an EXAMINE.
+
+=cut
+
+sub select {}
 
 =head3 selected
 
