@@ -12,7 +12,7 @@ use DateTime;
 
 use DateTime::Format::Strptime;
 use DateTime::Format::Mail;
-use constant INTERNALDATE_PARSER => DateTime::Format::Strptime->new(pattern => "%n%e-%b-%Y %T %z");
+use constant INTERNALDATE_PARSER => DateTime::Format::Strptime->new(pattern => "%e-%b-%Y %T %z");
 use constant HEADERDATE_PARSER => DateTime::Format::Mail->new->loose;
 
 # Canonical capitalization
@@ -78,16 +78,20 @@ sub internaldate {
     return $self->{internaldate} unless @_;
     my $value = shift;
 
+    my $dt;
     if (ref $value) {
-        $self->{internaldate} = $value->strftime("%e-%b-%Y %T %z");
+        $dt = $value;
     } else {
-        $self->{internaldate} = $value;
-        $value = $self->INTERNALDATE_PARSER->parse_datetime($value);
+        $value =~ s/^\s+//;
+        $dt = $self->INTERNALDATE_PARSER->parse_datetime($value);
     }
-    $value->truncate( to => "day" );
-    $value->set_time_zone( "floating" );
-    $value->set_time_zone( "UTC" );
-    $self->{epoch_day_utc} = $value->epoch;
+    return undef unless $dt;
+
+    $self->{internaldate} = $dt->strftime("%e-%b-%Y %T %z");
+    $dt->truncate( to => "day" );
+    $dt->set_time_zone( "floating" );
+    $dt->set_time_zone( "UTC" );
+    $self->{epoch_day_utc} = $dt->epoch;
     return $self->{internaldate};
 }
 
@@ -377,8 +381,9 @@ sub fetch {
     # Look if this will change the \Seen flag
     if ( grep { $_ =~ /^BODY\[/i } @parts and not $self->has_flag('\Seen') ) {
 
-        # If so, update, and possibly also inform the user.
-        $self->set_flag('\Seen');
+        # If so, update, and possibly also inform the user; do it
+        # "silently" because we'll report the FLAGS change ourselves
+        $self->set_flag('\Seen', 1);
         push @parts, "FLAGS" if not grep { uc $_ eq "FLAGS" } @parts;
     }
 

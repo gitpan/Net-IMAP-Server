@@ -8,7 +8,7 @@ use base qw/Net::Server::Coro Class::Accessor/;
 use UNIVERSAL::require;
 use Coro;
 
-our $VERSION = '1.28';
+our $VERSION = '1.29';
 
 =head1 NAME
 
@@ -540,7 +540,7 @@ Alex Vandiver  C<< <alexmv@bestpractical.com> >>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2009, Best Practical Solutions, LLC.  All rights reserved.
+Copyright (c) 2010, Best Practical Solutions, LLC.  All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
