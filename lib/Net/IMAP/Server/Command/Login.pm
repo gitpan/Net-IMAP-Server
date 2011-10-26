@@ -15,6 +15,9 @@ sub validate {
     return $self->bad_command("Not enough options") if @options < 2;
     return $self->bad_command("Too many options") if @options > 2;
 
+    $self->untagged_response("BAD [ALERT] Plaintext authentication not over SSL is insecure -- your password was just exposed.")
+        unless $self->connection->is_encrypted;
+
     return $self->no_command("Login is disabled")
       if $self->connection->capability =~ /\bLOGINDISABLED\b/;
 
@@ -26,13 +29,13 @@ sub run {
 
     $self->server->auth_class->require || $self->log( 1, $@ );
     my $auth = $self->server->auth_class->new;
-    if (    $auth->provides_plain
-        and $auth->auth_plain( $self->parsed_options ) )
-    {
+    if (not $auth->provides_plain) {
+        $self->bad_command("Protocol failure");
+    } elsif ( $auth->auth_plain( $self->parsed_options ) ) {
         $self->connection->auth($auth);
         $self->ok_completed();
     } else {
-        $self->bad_command("Invalid login");
+        $self->no_command("Invalid login");
     }
 }
 

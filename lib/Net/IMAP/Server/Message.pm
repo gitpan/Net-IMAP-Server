@@ -78,13 +78,7 @@ sub internaldate {
     return $self->{internaldate} unless @_;
     my $value = shift;
 
-    my $dt;
-    if (ref $value) {
-        $dt = $value;
-    } else {
-        $value =~ s/^\s+//;
-        $dt = $self->INTERNALDATE_PARSER->parse_datetime($value);
-    }
+    my $dt = ref $value ? $value : $self->INTERNALDATE_PARSER->parse_datetime($value);
     return undef unless $dt;
 
     $self->{internaldate} = $dt->strftime("%e-%b-%Y %T %z");
@@ -384,7 +378,7 @@ sub fetch {
         # If so, update, and possibly also inform the user; do it
         # "silently" because we'll report the FLAGS change ourselves
         $self->set_flag('\Seen', 1);
-        push @parts, "FLAGS" if not grep { uc $_ eq "FLAGS" } @parts;
+        unshift @parts, "FLAGS" if not grep { uc $_ eq "FLAGS" } @parts;
     }
 
     my @out;

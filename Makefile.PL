@@ -11,7 +11,7 @@ requires('Class::Accessor');
 requires('Coro');
 requires('DateTime');
 requires('DateTime::Format::Mail');
-requires('DateTime::Format::Strptime');
+requires('DateTime::Format::Strptime' => 1.3000);
 requires('Email::Address');
 requires('Email::MIME' => 1.862);
 requires('Email::MIME::ContentType');
@@ -24,4 +24,6 @@ requires('Regexp::Common');
 requires('Test::More');
 requires('UNIVERSAL::require');
 
-&WriteAll;
+sign;
+
+WriteAll;

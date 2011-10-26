@@ -18,7 +18,10 @@ sub validate {
     return $self->bad_command("Not enough options") if @options < 1;
     return $self->bad_command("Too many options") if @options > 2;
 
-    return $self->no_command("Login is disabled")
+    $self->untagged_response("BAD [ALERT] Plaintext authentication not over SSL is insecure -- your password was just exposed.")
+        if $options[0] eq "PLAIN" and not $self->connection->is_encrypted;
+
+    return $self->no_command("Authentication type not supported")
       unless $self->connection->capability =~ /\bAUTH=$options[0]\b/i;
 
     return 1;
@@ -38,7 +41,7 @@ sub run {
         $self->connection->pending(sub {$self->continue(@_)});
         $self->continue( $arg || "");
     } else {
-        $self->bad_command("Invalid login");
+        $self->no_command("Authentication type not supported");
     }
 }
 
@@ -46,24 +49,31 @@ sub continue {
     my $self = shift;
     my $line = shift;
 
-    if ( not defined $line or $line =~ /^\*[\r\n]+$/ ) {
-        $self->connection->pending(undef);
-        $self->bad_command("Login cancelled");
-        return;
-    }
+    $self->connection->pending(undef);
 
-    $line = decode_base64($line);
+    return $self->bad_command("Login cancelled")
+        if not defined $line or $line =~ /^\*[\r\n]+$/;
+
+    my $fail = 0;
+    {
+        # Trap and fail on "Premature end of base64 data", etc..
+        local $^W = 1;
+        local $SIG{__WARN__} = sub {$_[0] =~ /base64/i and $fail++};
+        $line = decode_base64($line);
+    }
+    return $self->bad_command("Invalid base64") if $fail;
 
     my $response = $self->sasl->($line);
     if ( ref $response ) {
+        $self->connection->pending(sub{$self->continue(@_)});
         $self->out( "+ " . encode_base64($$response) );
-    } elsif ($response) {
-        $self->connection->pending(undef);
+    } elsif (not $response) {
+        $self->no_command("Invalid login");
+    } elsif ($response < 0) {
+        $self->bad_command("Protocol failure");
+    } else {
         $self->connection->auth( $self->pending_auth );
         $self->ok_completed();
-    } else {
-        $self->connection->pending(undef);
-        $self->bad_command("Invalid login");
     }
 }
 

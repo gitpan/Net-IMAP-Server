@@ -8,7 +8,7 @@ use base qw/Net::Server::Coro Class::Accessor/;
 use UNIVERSAL::require;
 use Coro;
 
-our $VERSION = '1.29';
+our $VERSION = '1.30';
 
 =head1 NAME
 
@@ -276,7 +276,7 @@ listening sockets.
 DESTROY {
     my $self = shift;
     $_->close for grep { defined $_ } @{ $self->connections };
-    $self->socket->close if $self->socket;
+    $self->server_close;
 }
 
 =head2 connections
