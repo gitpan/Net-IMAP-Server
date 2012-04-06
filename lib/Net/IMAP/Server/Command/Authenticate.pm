@@ -35,6 +35,7 @@ sub run {
     my $auth = $self->server->auth_class->new;
     if ( grep {uc $type eq uc $_} $auth->sasl_provides ) {
         $type = lc $type;
+        $type =~ s/\W/_/g;
         my $function = "sasl_$type";
         $self->sasl( $auth->$function() );
         $self->pending_auth($auth);
@@ -52,21 +53,16 @@ sub continue {
     $self->connection->pending(undef);
 
     return $self->bad_command("Login cancelled")
-        if not defined $line or $line =~ /^\*[\r\n]+$/;
+        if not defined $line or $line =~ /^\*$/;
 
-    my $fail = 0;
-    {
-        # Trap and fail on "Premature end of base64 data", etc..
-        local $^W = 1;
-        local $SIG{__WARN__} = sub {$_[0] =~ /base64/i and $fail++};
-        $line = decode_base64($line);
-    }
-    return $self->bad_command("Invalid base64") if $fail;
+    my $decoded = decode_base64($line);
+    return $self->bad_command("Invalid base64")
+        if encode_base64($decoded, "") ne $line;
 
-    my $response = $self->sasl->($line);
+    my $response = $self->sasl->($decoded);
     if ( ref $response ) {
         $self->connection->pending(sub{$self->continue(@_)});
-        $self->out( "+ " . encode_base64($$response) );
+        $self->out( "+ " . encode_base64($$response, "") );
     } elsif (not $response) {
         $self->no_command("Invalid login");
     } elsif ($response < 0) {

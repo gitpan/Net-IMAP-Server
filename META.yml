@@ -1,7 +1,7 @@
 ---
 abstract: 'A single-threaded multiplexing IMAP server'
 author:
-  - 'Alex Vandiver <alexmv@mit.edu>'
+  - 'Alex Vandiver <alexmv@bestpractical.com>'
 build_requires:
   ExtUtils::MakeMaker: 6.42
   IO::Socket::SSL: 0
@@ -29,7 +29,7 @@ requires:
   Email::MIME::ContentType: 0
   Email::Simple: 1.999
   Encode::IMAPUTF7: 0
-  MIME::Base64: 0
+  MIME::Base64: 3.11
   Net::SSLeay: 0
   Net::Server::Coro: 0.6
   Regexp::Common: 0
@@ -38,4 +38,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://github.com/bestpractical/net-imap-server/
-version: 1.31
+version: 1.32
