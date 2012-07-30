@@ -3,11 +3,12 @@ abstract: 'A single-threaded multiplexing IMAP server'
 author:
   - 'Alex Vandiver <alexmv@bestpractical.com>'
 build_requires:
-  ExtUtils::MakeMaker: 6.42
+  ExtUtils::MakeMaker: 6.59
   IO::Socket::SSL: 0
 configure_requires:
-  ExtUtils::MakeMaker: 6.42
+  ExtUtils::MakeMaker: 6.59
 distribution_type: module
+dynamic_config: 1
 generated_by: 'Module::Install version 1.01'
 license: perl
 meta-spec:
@@ -35,7 +36,8 @@ requires:
   Regexp::Common: 0
   Test::More: 0
   UNIVERSAL::require: 0
+  perl: 5.8.8
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://github.com/bestpractical/net-imap-server/
-version: 1.33
+version: 1.34
