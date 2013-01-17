@@ -53,8 +53,9 @@ sub continue {
     $self->connection->pending(undef);
 
     return $self->bad_command("Login cancelled")
-        if not defined $line or $line =~ /^\*$/;
+        if not defined $line or $line =~ /^\*[\r\n]+$/;
 
+    $line =~ s/[\r\n]+$//;
     my $decoded = decode_base64($line);
     return $self->bad_command("Invalid base64")
         if encode_base64($decoded, "") ne $line;
