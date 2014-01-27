@@ -14,9 +14,9 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 5a98fb94a691b038d21d5346743bba64bce4a451 Changes
-SHA1 85dec096dfdc00929a305878278d5662ec47a2c6 MANIFEST
-SHA1 a2d3cc22d4b4ba9c604cd582152ef0052f82f8d0 META.yml
+SHA1 cf07d370edcf1317aed42e7d33cc8411f0856fa4 Changes
+SHA1 78d00cafaa16819731b7d3a78ac2339856d6d446 MANIFEST
+SHA1 770a03682666a393f4bf005f844f2fe4f7249ba4 META.yml
 SHA1 d8f0a10455ed27ff5e122d3a33c52e5c2fdf6854 Makefile.PL
 SHA1 20803052ac485820a77f4443fb75a376dab3b371 README
 SHA1 f5333026061a6f347e7f2a3ce8bb6847081c200c certs/server-cert.pem
@@ -28,11 +28,11 @@ SHA1 f0e01fff7d73cd145fbf22331579918d4628ddb0 inc/Module/Install/Can.pm
 SHA1 7328966e4fda0c8451a6d3850704da0b84ac1540 inc/Module/Install/Fetch.pm
 SHA1 b62ca5e2d58fa66766ccf4d64574f9e1a2250b34 inc/Module/Install/Makefile.pm
 SHA1 1aa925be410bb3bfcd84a16985921f66073cc1d2 inc/Module/Install/Metadata.pm
-SHA1 dc94326a076aca41452c1d65bf52a255feeb9ef7 inc/Module/Install/ReadmeFromPod.pm
+SHA1 79f5b4199f622e8b05aac266b0c39f6a85bb303f inc/Module/Install/ReadmeFromPod.pm
 SHA1 e4196994fa75e98bdfa2be0bdeeffef66de88171 inc/Module/Install/Win32.pm
 SHA1 c3a6d0d5b84feb3280622e9599e86247d58b0d18 inc/Module/Install/WriteAll.pm
-SHA1 527bc02cda32d250bd3d5cb7950ba7a7472bee94 lib/Net/IMAP/Server.pm
-SHA1 6c989236bade55bbfe767e33d3566cc2ab3a43bf lib/Net/IMAP/Server/Command.pm
+SHA1 6d7165ef21f9141160eb6c59de4b2ca96f0e1d13 lib/Net/IMAP/Server.pm
+SHA1 ac5060c7ab18a94e375131e611c20404262c23d9 lib/Net/IMAP/Server/Command.pm
 SHA1 4528753566f748a9b5525fa51ae22d7cc9fdc6b3 lib/Net/IMAP/Server/Command/Append.pm
 SHA1 d1976ad0d92b1ea13672bf6895091ee84e908bf1 lib/Net/IMAP/Server/Command/Authenticate.pm
 SHA1 70f2aeb901dde845183ef6b70f56b4d777641a5d lib/Net/IMAP/Server/Command/Capability.pm
@@ -80,13 +80,14 @@ SHA1 74b2514b72437c33909e8883606e910b9c295200 t/rfc-6.2.1-starttls.t
 SHA1 6b0eb113c254410e882a08ee5ef1c11f5b4d5a0f t/rfc-6.2.2-authenticate.t
 SHA1 d36bdc220d322cb4cdcf465140df4e7223b1c5fa t/rfc-6.2.3-login.t
 SHA1 74c5f43316fffb99560addf29d3554d13155df8d t/rfc-6.3.1-select.t
+SHA1 ec68ddd0a68e41ab7c6628024865119aabef54c8 t/rfc-6.3.10-status.t
 SHA1 111f381b2d28337e4a7683104838121f05d23186 t/rfc-6.3.3-create.t
 SHA1 d92f07dd21632fb8975d9771fb81c46c9860bb86 t/rfc-6.3.4-delete.t
 SHA1 fb48a77a25da2dc2ea821e9c0a79877e845cf974 t/rfc-6.3.5-rename.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iEYEARECAAYFAlD3+IEACgkQMflWJZZAbqBbpgCgpZz8uYTGPejFV0xGLMTbMbOj
-kXAAoLPjrG7IftmzOaU90pnp6QeMo/0E
-=DoMf
+iEYEARECAAYFAlLlpXcACgkQMflWJZZAbqBi8wCggKX+xRMDExZAKOQJpcGagXhp
+kN4AoKgqFrO+pIq56AfGwe704DMhCKXs
+=c/D5
 -----END PGP SIGNATURE-----
